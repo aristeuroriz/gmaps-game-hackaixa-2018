@@ -12,7 +12,8 @@ import {
   Button,
   FormGroup,
   FormControl,
-  ControlLabel
+  ControlLabel,
+  Well
 } from "react-bootstrap";
 
 import v1 from "./assets/images/Virus.ico";
@@ -26,7 +27,7 @@ const icons = [v1, v2, v3, b1, b2];
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { level: 0, show: true };
+    this.state = { level: 0, show: true, score: 0 };
     this.initMap = this.initMap.bind(this);
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -42,6 +43,7 @@ class App extends Component {
 
   handleClose() {
     this.setState({ show: false });
+    this.initMap();
   }
 
   handleShow() {
@@ -75,30 +77,47 @@ class App extends Component {
       zoom: 2
     });
     this.markPoints(map);
-    // let uluru = { lat: -25.344, lng: 131.036 };
   }
 
   markPoints(map) {
     const _this = this;
-    for (let index = 0; index < 30; index++) {
-      var random = new window.google.maps.LatLng(
-        Math.random() * (85 * 2) - 85,
-        Math.random() * (180 * 2) - 180
-      );
-      let icon = {
-        url: icons[Math.floor(Math.random() * icons.length)], // url
-        scaledSize: new window.google.maps.Size(35, 35), // scaled size
-        origin: new window.google.maps.Point(0, 0), // origin
-        anchor: new window.google.maps.Point(0, 0) // anchor
-      };
-      let marker = new window.google.maps.Marker({
-        position: random,
-        map: map,
-        icon: icon
-      });
-      marker.addListener("click", function() {
-        _this.deleteMarker(marker);
-      });
+    if (this.state.level !== 0) {
+      let qtd = 0;
+      switch (this.state.level) {
+        case "1":
+          qtd = 30;
+          break;
+        case "2":
+          qtd = 60;
+          break;
+        case "3":
+          qtd = 120;
+          break;
+        default:
+          qtd = 0;
+          break;
+      }
+      for (let index = 0; index < qtd; index++) {
+        var random = new window.google.maps.LatLng(
+          Math.random() * (85 * 2) - 85,
+          Math.random() * (180 * 2) - 180
+        );
+        let icon = {
+          url: icons[Math.floor(Math.random() * icons.length)], // url
+          scaledSize: new window.google.maps.Size(35, 35), // scaled size
+          origin: new window.google.maps.Point(0, 0), // origin
+          anchor: new window.google.maps.Point(0, 0) // anchor
+        };
+        let marker = new window.google.maps.Marker({
+          position: random,
+          map: map,
+          icon: icon
+        });
+        marker.addListener("click", function() {
+          _this.setState({ score: _this.state.score + 1 });
+          _this.deleteMarker(marker);
+        });
+      }
     }
   }
 
@@ -144,6 +163,12 @@ class App extends Component {
           </Nav>
         </Navbar>
         <Grid>
+          <Well
+            style={{ width: "200px", marginTop: "-2%" }}
+            className="pull-right"
+          >
+            <h5 className="text-center">Pontuação: {this.state.score}</h5>
+          </Well>
           <Row>
             <Col>
               <div id="map" style={{ width: "100%", height: "600px" }} />
