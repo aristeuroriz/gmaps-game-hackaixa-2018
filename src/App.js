@@ -14,17 +14,28 @@ import {
   FormControl,
   ControlLabel
 } from "react-bootstrap";
+
+import v1 from "./assets/images/Virus.ico";
+import v2 from "./assets/images/virus.png";
+import v3 from "./assets/images/virus-61-493635.png";
+import b1 from "./assets/images/bacteria-png-6.png";
+import b2 from "./assets/images/bacteria-png-8.png";
+
+const icons = [v1, v2, v3, b1, b2];
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = { level: 0, show: true };
     this.initMap = this.initMap.bind(this);
-
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleLevel = this.handleLevel.bind(this);
     this.getLevelName = this.getLevelName.bind(this);
+    this.markPoints = this.markPoints.bind(this);
+    this.deleteMarker = this.deleteMarker.bind(this);
   }
+
   componentDidMount() {
     this.initMap();
   }
@@ -40,6 +51,7 @@ class App extends Component {
   handleLevel(e) {
     this.setState({ level: e.target.value });
   }
+
   getLevelName() {
     switch (this.state.level) {
       case "1":
@@ -62,10 +74,38 @@ class App extends Component {
       center: { lat: -15.79, lng: -47.8929 },
       zoom: 2
     });
-    let uluru = { lat: -25.344, lng: 131.036 };
-    let marker = new window.google.maps.Marker({ position: uluru, map: map });
-    console.log(map);
+    this.markPoints(map);
+    // let uluru = { lat: -25.344, lng: 131.036 };
   }
+
+  markPoints(map) {
+    const _this = this;
+    for (let index = 0; index < 30; index++) {
+      var random = new window.google.maps.LatLng(
+        Math.random() * (85 * 2) - 85,
+        Math.random() * (180 * 2) - 180
+      );
+      let icon = {
+        url: icons[Math.floor(Math.random() * icons.length)], // url
+        scaledSize: new window.google.maps.Size(35, 35), // scaled size
+        origin: new window.google.maps.Point(0, 0), // origin
+        anchor: new window.google.maps.Point(0, 0) // anchor
+      };
+      let marker = new window.google.maps.Marker({
+        position: random,
+        map: map,
+        icon: icon
+      });
+      marker.addListener("click", function() {
+        _this.deleteMarker(marker);
+      });
+    }
+  }
+
+  deleteMarker(marker) {
+    marker.setMap(null);
+  }
+
   render() {
     console.log(this.state);
     return (
