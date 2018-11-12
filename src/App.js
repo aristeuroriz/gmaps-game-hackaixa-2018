@@ -1,5 +1,15 @@
 import React, { Component } from "react";
-import { Navbar, Grid, Row, Col, Modal, Button } from "react-bootstrap";
+import {
+  Navbar,
+  Grid,
+  Row,
+  Col,
+  Modal,
+  Button,
+  FormGroup,
+  FormControl,
+  ControlLabel
+} from "react-bootstrap";
 class App extends Component {
   constructor(props) {
     super(props);
@@ -8,6 +18,7 @@ class App extends Component {
 
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.handleLevel = this.handleLevel.bind(this);
   }
   componentDidMount() {
     this.initMap();
@@ -21,6 +32,10 @@ class App extends Component {
     this.setState({ show: true });
   }
 
+  handleLevel(e) {
+    this.setState({ level: e.target.value });
+  }
+
   initMap() {
     const map = new window.google.maps.Map(document.getElementById("map"), {
       center: { lat: -15.79, lng: -47.8929 },
@@ -31,6 +46,7 @@ class App extends Component {
     console.log(map);
   }
   render() {
+    console.log(this.state);
     return (
       <div className="container-fluid">
         <Navbar
@@ -71,14 +87,33 @@ class App extends Component {
             </Col>
             <Modal show={this.state.show} onHide={this.handleClose}>
               <Modal.Header closeButton>
-                <Modal.Title>Modal title</Modal.Title>
+                <Modal.Title>Escolha o nível de dificuldade</Modal.Title>
               </Modal.Header>
 
-              <Modal.Body>One fine body...</Modal.Body>
+              <Modal.Body>
+                <FormGroup controlId="formControlsSelect">
+                  <ControlLabel>Nível</ControlLabel>
+                  <FormControl
+                    componentClass="select"
+                    placeholder="select"
+                    onClick={this.handleLevel}
+                  >
+                    <option value="select">Selecione</option>
+                    <option value="1">Fácil</option>
+                    <option value="2">Médio</option>
+                    <option value="3">Difícil</option>
+                  </FormControl>
+                </FormGroup>
+              </Modal.Body>
 
               <Modal.Footer>
-                <Button onClick={this.handleClose}>Close</Button>
-                <Button bsStyle="primary">Save changes</Button>
+                <Button onClick={this.handleClose}>Cancelar</Button>
+                <Button
+                  onClick={this.state.level !== 0 ? this.handleClose : ""}
+                  bsStyle="primary"
+                >
+                  Jogar
+                </Button>
               </Modal.Footer>
             </Modal>
           </Row>
