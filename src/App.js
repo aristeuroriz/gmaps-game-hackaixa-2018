@@ -28,7 +28,7 @@ const icons = [v1, v2, v3, b1, b2];
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { level: 0, show: true, score: 0, showEndModal: true };
+    this.state = { level: 0, show: true, score: 0, showEndModal: false };
     this.initMap = this.initMap.bind(this);
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -41,25 +41,23 @@ class App extends Component {
 
   componentDidMount() {
     this.initMap();
-    this.listeningEndGame();
   }
 
   listeningEndGame() {
-    // console.log(object);
-    // if (this.state.level !== 0 && this.getQtd() === this.state.score) {
-    //   this.setState({ showEndModal: true, level: 0, score: 0 });
-    // }
+    if (
+      this.state.level !== 0 &&
+      this.state.score !== 0 &&
+      this.getQtd() === this.state.score
+    ) {
+      this.setState({ showEndModal: true, level: 0, score: 0 });
+    }
   }
 
   timer() {
-    let sec = 30;
-    let timer = setInterval(function() {
-      document.getElementById("safeTimerDisplay").innerHTML = "00:" + sec;
-      sec--;
-      if (sec < 0) {
-        clearInterval(timer);
-      }
-    }, 1000);
+    // let timer = setTimeout(() => {
+    //   alert("Hello");
+    // }, 10000);
+    // console.log("timer: ", timer);
   }
 
   handleClose() {
@@ -93,6 +91,7 @@ class App extends Component {
   }
 
   initMap() {
+    this.timer();
     this.setState({ score: 0 });
     const map = new window.google.maps.Map(document.getElementById("map"), {
       center: { lat: -15.79, lng: -47.8929 },
@@ -123,6 +122,7 @@ class App extends Component {
         });
         marker.addListener("click", function() {
           _this.setState({ score: _this.state.score + 1 });
+          _this.listeningEndGame();
           _this.deleteMarker(marker);
         });
       }
@@ -142,7 +142,7 @@ class App extends Component {
         qtd = 120;
         break;
       default:
-        qtd = 0;
+        qtd = -1;
         break;
     }
     return qtd;
@@ -153,7 +153,7 @@ class App extends Component {
   }
 
   render() {
-    const { score, level } = this.state;
+    const { score } = this.state;
 
     let now = (score * 100) / this.getQtd();
 
@@ -212,7 +212,7 @@ class App extends Component {
             <Col>
               <div id="map" style={{ width: "100%", height: "600px" }} />
             </Col>
-            {/* <Modal
+            <Modal
               show={this.state.showEndModal}
               onHide={() => {
                 this.setState({ showEndModal: false });
@@ -231,9 +231,15 @@ class App extends Component {
               </Modal.Body>
 
               <Modal.Footer>
-                <Button onClick={this.handleClose}>Fechar</Button>
+                <Button
+                  onClick={() => {
+                    this.setState({ showEndModal: false });
+                  }}
+                >
+                  Fechar
+                </Button>
               </Modal.Footer>
-            </Modal> */}
+            </Modal>
 
             <Modal show={this.state.show} onHide={this.handleClose}>
               <Modal.Header closeButton>
@@ -256,6 +262,8 @@ class App extends Component {
                     <option value="3">Difícil</option>
                   </FormControl>
                 </FormGroup>
+                <h6>Instruções:</h6>
+                <p>Clique nos vírus e bactérias no mapa para extermina-los.</p>
               </Modal.Body>
 
               <Modal.Footer>
