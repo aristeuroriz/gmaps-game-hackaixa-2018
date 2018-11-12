@@ -1,5 +1,6 @@
 {
   "name": "maps-game-hackaixa",
+  "author": "Aristeu Roriz Neto - C145149",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

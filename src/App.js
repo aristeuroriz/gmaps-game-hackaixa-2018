@@ -13,7 +13,8 @@ import {
   FormGroup,
   FormControl,
   ControlLabel,
-  Well
+  Well,
+  ProgressBar
 } from "react-bootstrap";
 
 import v1 from "./assets/images/Virus.ico";
@@ -72,6 +73,7 @@ class App extends Component {
   }
 
   initMap() {
+    this.setState({ score: 0 });
     const map = new window.google.maps.Map(document.getElementById("map"), {
       center: { lat: -15.79, lng: -47.8929 },
       zoom: 2
@@ -82,21 +84,7 @@ class App extends Component {
   markPoints(map) {
     const _this = this;
     if (this.state.level !== 0) {
-      let qtd = 0;
-      switch (this.state.level) {
-        case "1":
-          qtd = 30;
-          break;
-        case "2":
-          qtd = 60;
-          break;
-        case "3":
-          qtd = 120;
-          break;
-        default:
-          qtd = 0;
-          break;
-      }
+      let qtd = this.getQtd();
       for (let index = 0; index < qtd; index++) {
         var random = new window.google.maps.LatLng(
           Math.random() * (85 * 2) - 85,
@@ -121,12 +109,34 @@ class App extends Component {
     }
   }
 
+  getQtd() {
+    let qtd = 0;
+    switch (this.state.level) {
+      case "1":
+        qtd = 30;
+        break;
+      case "2":
+        qtd = 60;
+        break;
+      case "3":
+        qtd = 120;
+        break;
+      default:
+        qtd = 0;
+        break;
+    }
+    return qtd;
+  }
+
   deleteMarker(marker) {
     marker.setMap(null);
   }
 
   render() {
-    console.log(this.state);
+    const { score, level } = this.state;
+
+    let now = (score * 100) / this.getQtd();
+
     return (
       <div className="container-fluid">
         <Navbar
@@ -163,12 +173,19 @@ class App extends Component {
           </Nav>
         </Navbar>
         <Grid>
-          <Well
-            style={{ width: "200px", marginTop: "-2%" }}
-            className="pull-right"
-          >
-            <h5 className="text-center">Pontuação: {this.state.score}</h5>
-          </Well>
+          <div>
+            <Col md={9} style={{ margin: "15px" }}>
+              <ProgressBar active bsStyle="danger" now={now} />
+            </Col>
+            <Col md={2}>
+              <Well
+                style={{ width: "200px", marginTop: "-2%" }}
+                className="pull-right"
+              >
+                <h5 className="text-center">Pontuação: {this.state.score}</h5>
+              </Well>
+            </Col>
+          </div>
           <Row>
             <Col>
               <div id="map" style={{ width: "100%", height: "600px" }} />
