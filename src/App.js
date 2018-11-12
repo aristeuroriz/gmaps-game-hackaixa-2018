@@ -1,19 +1,33 @@
 import React, { Component } from "react";
-import { Navbar, Grid, Row, Col } from "react-bootstrap";
+import { Navbar, Grid, Row, Col, Modal, Button } from "react-bootstrap";
 class App extends Component {
   constructor(props) {
     super(props);
+    this.state = { level: 0, show: true };
     this.initMap = this.initMap.bind(this);
+
+    this.handleShow = this.handleShow.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
   componentDidMount() {
     this.initMap();
   }
 
+  handleClose() {
+    this.setState({ show: false });
+  }
+
+  handleShow() {
+    this.setState({ show: true });
+  }
+
   initMap() {
     const map = new window.google.maps.Map(document.getElementById("map"), {
       center: { lat: -15.79, lng: -47.8929 },
-      zoom: 4
+      zoom: 2
     });
+    let uluru = { lat: -25.344, lng: 131.036 };
+    let marker = new window.google.maps.Marker({ position: uluru, map: map });
     console.log(map);
   }
   render() {
@@ -55,6 +69,18 @@ class App extends Component {
             <Col>
               <div id="map" style={{ width: "100%", height: "600px" }} />
             </Col>
+            <Modal show={this.state.show} onHide={this.handleClose}>
+              <Modal.Header closeButton>
+                <Modal.Title>Modal title</Modal.Title>
+              </Modal.Header>
+
+              <Modal.Body>One fine body...</Modal.Body>
+
+              <Modal.Footer>
+                <Button onClick={this.handleClose}>Close</Button>
+                <Button bsStyle="primary">Save changes</Button>
+              </Modal.Footer>
+            </Modal>
           </Row>
         </Grid>
       </div>
