@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "@google/maps": "^0.5.5",
+    "momentjs": "^2.0.0",
     "react": "^16.6.1",
     "react-bootstrap": "^0.32.4",
     "react-dom": "^16.6.1",

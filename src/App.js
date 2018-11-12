@@ -28,7 +28,7 @@ const icons = [v1, v2, v3, b1, b2];
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { level: 0, show: true, score: 0 };
+    this.state = { level: 0, show: true, score: 0, showEndModal: true };
     this.initMap = this.initMap.bind(this);
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -36,10 +36,30 @@ class App extends Component {
     this.getLevelName = this.getLevelName.bind(this);
     this.markPoints = this.markPoints.bind(this);
     this.deleteMarker = this.deleteMarker.bind(this);
+    this.listeningEndGame = this.listeningEndGame.bind(this);
   }
 
   componentDidMount() {
     this.initMap();
+    this.listeningEndGame();
+  }
+
+  listeningEndGame() {
+    // console.log(object);
+    // if (this.state.level !== 0 && this.getQtd() === this.state.score) {
+    //   this.setState({ showEndModal: true, level: 0, score: 0 });
+    // }
+  }
+
+  timer() {
+    let sec = 30;
+    let timer = setInterval(function() {
+      document.getElementById("safeTimerDisplay").innerHTML = "00:" + sec;
+      sec--;
+      if (sec < 0) {
+        clearInterval(timer);
+      }
+    }, 1000);
   }
 
   handleClose() {
@@ -175,6 +195,7 @@ class App extends Component {
         <Grid>
           <div>
             <Col md={9} style={{ margin: "15px" }}>
+              <h5 className="text-center">Progresso {now.toFixed(0)}%</h5>
               <ProgressBar active bsStyle="danger" now={now} />
             </Col>
             <Col md={2}>
@@ -183,6 +204,7 @@ class App extends Component {
                 className="pull-right"
               >
                 <h5 className="text-center">Pontuação: {this.state.score}</h5>
+                <h5 className="text-center">Meta: {this.getQtd()}</h5>
               </Well>
             </Col>
           </div>
@@ -190,14 +212,39 @@ class App extends Component {
             <Col>
               <div id="map" style={{ width: "100%", height: "600px" }} />
             </Col>
+            {/* <Modal
+              show={this.state.showEndModal}
+              onHide={() => {
+                this.setState({ showEndModal: false });
+              }}
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>
+                  Parabéns! Você conseguiu remover todos os focos de epidemia do
+                  mundo.
+                </Modal.Title>
+              </Modal.Header>
+
+              <Modal.Body>
+                Agora aumente o nível de dificuldade de tente manter o mundo
+                livre de pragas.
+              </Modal.Body>
+
+              <Modal.Footer>
+                <Button onClick={this.handleClose}>Fechar</Button>
+              </Modal.Footer>
+            </Modal> */}
+
             <Modal show={this.state.show} onHide={this.handleClose}>
               <Modal.Header closeButton>
-                <Modal.Title>Escolha o nível de dificuldade</Modal.Title>
+                <Modal.Title>
+                  Vamos remover do mapa os focos de epidemia do mundo?
+                </Modal.Title>
               </Modal.Header>
 
               <Modal.Body>
                 <FormGroup controlId="formControlsSelect">
-                  <ControlLabel>Nível</ControlLabel>
+                  <ControlLabel>Selecione o Nível de Dificuldade</ControlLabel>
                   <FormControl
                     componentClass="select"
                     placeholder="select"
