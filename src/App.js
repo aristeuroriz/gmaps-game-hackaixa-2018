@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import {
   Navbar,
+  Nav,
+  NavItem,
+  NavDropdown,
+  MenuItem,
   Grid,
   Row,
   Col,
@@ -19,6 +23,7 @@ class App extends Component {
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleLevel = this.handleLevel.bind(this);
+    this.getLevelName = this.getLevelName.bind(this);
   }
   componentDidMount() {
     this.initMap();
@@ -34,6 +39,22 @@ class App extends Component {
 
   handleLevel(e) {
     this.setState({ level: e.target.value });
+  }
+  getLevelName() {
+    switch (this.state.level) {
+      case "1":
+        return "Fácil";
+        break;
+      case "2":
+        return "Médio";
+        break;
+      case "3":
+        return "Difícil";
+        break;
+      default:
+        return "Indefinido";
+        break;
+    }
   }
 
   initMap() {
@@ -63,22 +84,24 @@ class App extends Component {
               <h1 style={{ color: "white" }}>GMaps Game - Hackaixa</h1>
             </Navbar.Brand>
           </Navbar.Header>
-          {/* <Nav>
-            <NavItem eventKey={1} href="#">
+          <Nav>
+            {/* <NavItem eventKey={1} href="#" >
               Link
             </NavItem>
             <NavItem eventKey={2} href="#">
               Link
-            </NavItem>
+            </NavItem> */}
             <NavDropdown
               className="pull-right"
               eventKey={3}
-              title="Dropdown"
+              title={`Nível ${this.getLevelName()}`}
               id="basic-nav-dropdown"
             >
-              <MenuItem eventKey={3.1}>Action</MenuItem>
+              <MenuItem eventKey={3.1} onClick={this.handleShow}>
+                Mudar de Nível
+              </MenuItem>
             </NavDropdown>
-          </Nav> */}
+          </Nav>
         </Navbar>
         <Grid>
           <Row>
